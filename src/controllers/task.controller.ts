@@ -15,12 +15,32 @@ export const createTask = async (req: Request, res: Response): Promise<void> => 
 
 export const getTasks = async (req: Request, res: Response): Promise<void> => {
     try {
-        const tasks: ITask[] = await Task.find();
-        res.status(200).json(tasks);
+      const { status, startDate, endDate, page =1, limit = 10 } = req.query;
+      let query: any = {};
+  
+      if (status) {
+        query.status = status;
+      }
+  
+      if (startDate && endDate) {
+        query.createdAt = {
+          $gte: new Date(startDate as string),
+          $lte: new Date(endDate as string)
+        };
+      }
+
+      const options = {
+        page: parseInt(page as string, 10),
+        limit: parseInt(limit as string, 10),
+        populate: {path: 'assignedTo', select: 'name email'}
+      }
+  
+      const tasks = await Task.paginate(query, options);
+      res.status(200).json(tasks);
     } catch (error) {
-        res.status(400).json({ error: (error as Error).message });
+      res.status(500).json({ message: (error as Error).message });
     }
-};
+  };
 
 export const getTaskById = async (req: Request, res: Response): Promise<void> => {
     try {

@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import connectDB from "./config/database";
 import taskRoutes from "./routes/task.routes";
 import userRoutes from "./routes/user.routes";
+import {errorHandler} from "./middleware/error.middleware";
+
 
 
 dotenv.config();
@@ -24,3 +26,5 @@ app.get("/", (req: Request, res: Response) => {
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+app.use(errorHandler);
