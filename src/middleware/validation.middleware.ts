@@ -7,10 +7,10 @@ export const validateRequest = (schema: ZodSchema) => {
             schema.parse(req.body);
             next();
         } catch (error) {
-            if (error instanceof ZodError) {
+            if (error instanceof z.ZodError) {
                 res.status(400).json({error: error.errors});
             } else {
-                res.status(500).json({error: 'An unexpected error occurred'});
+                res.status(400).json({error: 'Invalid Input'});
             }
         }
     };
@@ -22,10 +22,17 @@ export const userSchema = z.object({
     password: z.string().min(8),
 });
 
+export const createUserSchema = z.union([
+    userSchema,
+    z.array(userSchema)
+  ]);
+  
+export const updateUserSchema = userSchema.partial();
+
 export const taskSchema = z.object({
     title: z.string().min(1),
     description: z.string().min(1),
-    status: z.enum(['to-do', 'in progress', 'blocked', 'done']),
+    status: z.enum(['To Do', 'In Progress', 'Blocked', 'Done']),
     assignedTo: z.string().length(24).optional(),
     finishedBy: z.date().optional(),
 });
