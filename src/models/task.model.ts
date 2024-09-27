@@ -4,10 +4,12 @@ import mongoosePaginate from "mongoose-paginate-v2";
 export interface ITask extends Document {
     title: string;
     description: string;
-    status: string;
-    assignedTo: mongoose.Types.ObjectId;
+    status: "To Do" | "In Progress" | "Blocked" | "Done";
+    assignedTo?: mongoose.Types.ObjectId;
     createdAt: Date;
-    finishedBy: Date;
+    finishedBy?: Date;
+    tags?: string[];
+    projectId?: mongoose.Types.ObjectId;
 }
 
 const taskSchema: Schema = new Schema({
@@ -16,7 +18,9 @@ const taskSchema: Schema = new Schema({
     status: {type: String, required: true, enum: ["To Do", "In Progress", "Blocked", "Done"]},
     assignedTo: {type: Schema.Types.ObjectId, ref: "User", required: true},
     createdAt: {type: Date, default: Date.now, required: true},
-    finishedBy: {type: Date}
+    finishedBy: {type: Date},
+    tags: {type: [String], required: false},
+    projectId: {type: Schema.Types.ObjectId, ref: "Project", required: false}
 });
 
 taskSchema.plugin(mongoosePaginate);

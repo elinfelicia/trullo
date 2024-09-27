@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import Task from "../models/task.model";
-import { ITask } from "../models/task.model";
+import Task, { ITask } from "../models/task.model";
 
 export const createTask = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -15,7 +14,7 @@ export const createTask = async (req: Request, res: Response): Promise<void> => 
 
 export const getTasks = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { status, startDate, endDate, page =1, limit = 10 } = req.query;
+      const { status, startDate, endDate, tags, projectId, page =1, limit = 10 } = req.query;
       let query: any = {};
   
       if (status) {
@@ -29,11 +28,22 @@ export const getTasks = async (req: Request, res: Response): Promise<void> => {
         };
       }
 
+      if (typeof tags === 'string') {
+        query.tags = { $in: tags.split(',') };
+      }
+
+      if (projectId) {
+        query.projectId = projectId;
+      }
+
       const options = {
         page: parseInt(page as string, 10),
         limit: parseInt(limit as string, 10),
-        populate: {path: 'assignedTo', select: 'name email'}
-      }
+        populate: [
+            {path: 'assignedTo', select: 'name email'},
+            {path: 'project', select: 'name description'}
+        ]
+      };
   
       const tasks = await Task.paginate(query, options);
       res.status(200).json(tasks);
@@ -44,7 +54,9 @@ export const getTasks = async (req: Request, res: Response): Promise<void> => {
 
 export const getTaskById = async (req: Request, res: Response): Promise<void> => {
     try {
-        const task: ITask | null = await Task.findById(req.params.id).populate('assignedTo', 'name email');
+        const task: ITask | null = await Task.findById(req.params.id)
+            .populate('assignedTo', 'name email')
+            .populate('projectId', 'name description');
         if (!task) {
             res.status(404).json({ error: "Task not found" });
             return;
