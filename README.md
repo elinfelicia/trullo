@@ -107,6 +107,80 @@ npm run dev
 
 The frontend will run on `http://localhost:5173` (or another port if 5173 is taken).
 
+### Deploying Backend to Railway (Recommended)
+
+1. **Sign up at [Railway.app](https://railway.app)** (free tier available)
+
+2. **Create a new project**:
+   - Click "New Project"
+   - Select "Deploy from GitHub repo"
+   - Choose your repository
+
+3. **Configure the service**:
+   - Root Directory: `backend`
+   - Build Command: `npm run build`
+   - Start Command: `npm start`
+
+4. **Add Environment Variables** in Railway:
+   - `PORT` (usually auto-set by Railway)
+   - `MONGODB_URI` = your MongoDB Atlas connection string
+   - `JWT_SECRET` = your JWT secret key
+   - `ALLOWED_ORIGINS` = your frontend URL (e.g., `https://your-app.vercel.app`)
+   - `NODE_ENV` = `production`
+
+5. **Deploy**: Railway will automatically deploy your backend
+
+6. **Get your backend URL**: Railway will provide a URL like `https://your-app.up.railway.app`
+
+### Deploying Backend to Render (Alternative)
+
+1. **Sign up at [Render.com](https://render.com)** (free tier available)
+
+2. **Create a new Web Service**:
+   - Connect your GitHub repository
+   - Root Directory: `backend`
+   - Build Command: `npm run build`
+   - Start Command: `npm start`
+
+3. **Add Environment Variables**:
+   - `MONGODB_URI` = your MongoDB Atlas connection string
+   - `JWT_SECRET` = your JWT secret key
+   - `ALLOWED_ORIGINS` = your frontend URL
+   - `NODE_ENV` = `production`
+
+4. **Deploy**: Render will build and deploy your backend
+
+### Deploying Frontend to Vercel
+
+1. **Install Vercel CLI** (optional, you can also use the web interface):
+```bash
+npm install -g vercel
+```
+
+2. **Deploy from the frontend directory**:
+```bash
+cd frontend
+vercel
+```
+
+Or use the Vercel web interface:
+- Go to [vercel.com](https://vercel.com)
+- Import your Git repository
+- Set the root directory to `frontend`
+- Add environment variable: `VITE_API_URL` = your backend API URL (e.g., `https://your-backend.herokuapp.com/api`)
+
+3. **Important**: Set the `VITE_API_URL` environment variable in Vercel:
+   - Go to your project settings in Vercel
+   - Navigate to "Environment Variables"
+   - Add `VITE_API_URL` with your backend API URL
+   - Make sure your backend CORS allows requests from your Vercel domain
+
+4. **Build Settings** (should auto-detect):
+   - Framework Preset: Vite
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+   - Install Command: `npm install`
+
 ### Running Both Servers
 
 Open two terminal windows:
