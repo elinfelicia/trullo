@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { tasksAPI, usersAPI } from '../services/api';
+import { tasksAPI, usersAPI, projectsAPI } from '../services/api';
 import './Tasks.css';
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
   const [users, setUsers] = useState([]);
+  const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
@@ -13,11 +14,13 @@ const Tasks = () => {
     description: '',
     status: 'To Do',
     assignedTo: '',
+    projectId: '',
   });
 
   useEffect(() => {
     fetchTasks();
     fetchUsers();
+    fetchProjects();
   }, []);
 
   const fetchTasks = async () => {
@@ -37,6 +40,15 @@ const Tasks = () => {
       setUsers(response.data || []);
     } catch (error) {
       console.error('Error fetching users:', error);
+    }
+  };
+
+  const fetchProjects = async () => {
+    try {
+      const response = await projectsAPI.getAll();
+      setProjects(response.data || []);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
     }
   };
 
@@ -75,6 +87,7 @@ const Tasks = () => {
       description: task.description,
       status: task.status,
       assignedTo: task.assignedTo?._id || task.assignedTo || '',
+      projectId: task.projectId?._id || task.projectId || '',
     });
     setShowForm(true);
   };
@@ -85,6 +98,7 @@ const Tasks = () => {
       description: '',
       status: 'To Do',
       assignedTo: '',
+      projectId: '',
     });
     setEditingTask(null);
     setShowForm(false);
@@ -161,6 +175,20 @@ const Tasks = () => {
                   ))}
                 </select>
               </div>
+              <div className="form-group">
+                <label>Project</label>
+                <select
+                  value={formData.projectId}
+                  onChange={(e) => setFormData({ ...formData, projectId: e.target.value })}
+                >
+                  <option value="">No project</option>
+                  {projects.map((project) => (
+                    <option key={project._id} value={project._id}>
+                      {project.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div className="form-actions">
                 <button type="submit" className="btn-primary">
                   {editingTask ? 'Update' : 'Create'}
@@ -193,6 +221,11 @@ const Tasks = () => {
               {task.assignedTo && (
                 <p className="task-assigned">
                   Assigned to: {task.assignedTo.name || task.assignedTo.email || 'Unknown'}
+                </p>
+              )}
+              {task.projectId && (
+                <p className="task-project">
+                  Project: {task.projectId.name || 'Unknown Project'}
                 </p>
               )}
               <div className="task-actions">

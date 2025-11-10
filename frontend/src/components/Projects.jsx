@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { projectsAPI, tasksAPI } from '../services/api';
+import ProjectDetail from './ProjectDetail';
 import './Projects.css';
 
 const Projects = () => {
@@ -7,6 +8,7 @@ const Projects = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
   const [editingProject, setEditingProject] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -154,16 +156,22 @@ const Projects = () => {
                   <div className="project-tasks">
                     <h4>Tasks:</h4>
                     <ul>
-                      {projectTasks.slice(0, 5).map((task) => (
+                      {projectTasks.slice(0, 3).map((task) => (
                         <li key={task._id}>{task.title}</li>
                       ))}
-                      {projectTasks.length > 5 && (
-                        <li>...and {projectTasks.length - 5} more</li>
+                      {projectTasks.length > 3 && (
+                        <li>...and {projectTasks.length - 3} more</li>
                       )}
                     </ul>
                   </div>
                 )}
                 <div className="project-actions">
+                  <button 
+                    onClick={() => setSelectedProject(project)} 
+                    className="btn-view"
+                  >
+                    View Details
+                  </button>
                   <button onClick={() => handleEdit(project)} className="btn-edit">
                     Edit
                   </button>
@@ -176,6 +184,17 @@ const Projects = () => {
           })
         )}
       </div>
+
+      {selectedProject && (
+        <ProjectDetail
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+          onUpdate={() => {
+            fetchProjects();
+            fetchTasks();
+          }}
+        />
+      )}
     </div>
   );
 };

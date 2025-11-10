@@ -83,6 +83,22 @@
   margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px solid #eee;
+  flex-wrap: wrap;
+}
+
+.btn-view {
+  padding: 0.5rem 1rem;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-view:hover {
+  opacity: 0.9;
 }
 
 .no-data {

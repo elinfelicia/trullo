@@ -27,6 +27,12 @@
   opacity: 0.9;
 }
 
+/* Override width for header buttons - they should be auto-width, not 100% */
+.tasks-header .btn-primary,
+.projects-header .btn-primary {
+  width: auto;
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -164,7 +170,14 @@
 .task-assigned {
   color: #888;
   font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.task-project {
+  color: #667eea;
+  font-size: 0.9rem;
   margin-bottom: 1rem;
+  font-weight: 500;
 }
 
 .task-actions {

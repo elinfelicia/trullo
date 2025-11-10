@@ -74,7 +74,10 @@ export const projectsAPI = {
   update: (id, data) => api.put(`/projects/${id}`, data),
   delete: (id) => api.delete(`/projects/${id}`),
   addTask: (projectId, taskId) => api.post(`/projects/${projectId}/tasks`, { taskId }),
-  removeTask: (projectId, taskId) => api.delete(`/projects/${projectId}/tasks`, { data: { taskId } }),
+  removeTask: (projectId, taskId) => api.delete(`/projects/${projectId}/tasks`, { 
+    data: { taskId },
+    headers: { 'Content-Type': 'application/json' }
+  }),
 };
 
 export default api;
