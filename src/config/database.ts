@@ -9,11 +9,13 @@ const connectDB = async (): Promise<void> => {
         console.log(`MongoDB Connected: ${conn.connection.host}`);
     } catch (error: unknown) {
         if (error instanceof Error) {
-          console.error(`Error: ${error.message}`);
+          console.error(`MongoDB Connection Error: ${error.message}`);
+          console.error('Server will continue but database operations will fail until MongoDB is connected.');
         } else {
           console.error('Unknown error occurred');
         }
-        process.exit(1)
+        // Don't exit - allow server to run for testing
+        // process.exit(1)
     }
 };
 

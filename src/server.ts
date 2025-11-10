@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/database";
 import taskRoutes from "./routes/task.routes";
 import userRoutes from "./routes/user.routes";
+import projectRoutes from "./routes/project.routes";
 import {errorHandler} from "./middleware/error.middleware";
 
 
@@ -19,6 +20,7 @@ app.use(express.json());
 
 app.use('/api/tasks', taskRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/projects', projectRoutes);
 app.get("/", (req: Request, res: Response) => {
     res.send("Trullo API");
 });

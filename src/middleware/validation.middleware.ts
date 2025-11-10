@@ -44,4 +44,12 @@ export const projectSchema = z.object({
     name: z.string().min(1),
     description: z.string().optional(),
     tasks: z.array(z.string().length(24)).optional(),
-})
+});
+
+export const addTaskToProjectSchema = z.object({
+    taskId: z.string().length(24),
+});
+
+export const removeTaskFromProjectSchema = z.object({
+    taskId: z.string().length(24),
+});

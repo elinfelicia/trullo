@@ -41,7 +41,7 @@ export const getTasks = async (req: Request, res: Response): Promise<void> => {
         limit: parseInt(limit as string, 10),
         populate: [
             {path: 'assignedTo', select: 'name email'},
-            {path: 'project', select: 'name description'}
+            {path: 'projectId', select: 'name description'}
         ]
       };
   

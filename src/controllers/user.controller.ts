@@ -5,10 +5,12 @@ import jwt from 'jsonwebtoken';
 
 export const createUser = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const usersData: IUser[] = req.body;
+    // Handle both single user object and array of users
+    const usersData: IUser | IUser[] = req.body;
+    const usersArray: IUser[] = Array.isArray(usersData) ? usersData : [usersData];
     const users: Partial<IUser>[] = [];
 
-    for (const userData of usersData) {
+    for (const userData of usersArray) {
       if (!userData.email || !userData.password) {
         return res.status(400).json({ message: "Email and password are required" });
       }
@@ -24,10 +26,11 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
         password: hashedPassword,
       });
       await user.save();
-      users.push({ _id: user._id, email: user.email });
+      users.push({ _id: user._id, name: user.name, email: user.email });
     }
 
-    return res.status(201).json(users);
+    // Return array if multiple users, single object if one user
+    return res.status(201).json(usersArray.length === 1 ? users[0] : users);
   } catch (error) {
     console.error('Error in createUser:', error);
     return res.status(500).json({ message: 'An error occurred while creating the user(s)' });

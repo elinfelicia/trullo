@@ -1,5 +1,73 @@
 # Trullo
 
+## Setup Instructions
+
+### Prerequisites
+- Node.js installed
+- MongoDB database (local or MongoDB Atlas)
+
+### Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```env
+PORT=3000
+MONGODB_URI=your-mongodb-connection-string
+JWT_SECRET=your-jwt-secret-key
+```
+
+#### Setting up MongoDB Atlas (Recommended)
+
+1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register) and create a free account
+2. Create a new cluster (choose the free M0 tier)
+3. Create a database user:
+   - Go to "Database Access" → "Add New Database User"
+   - Choose "Password" authentication
+   - Save the username and password
+4. Whitelist your IP address:
+   - Go to "Network Access" → "Add IP Address"
+   - For development, you can use `0.0.0.0/0` (allows all IPs - not recommended for production)
+5. Get your connection string:
+   - Go to "Database" → "Connect" → "Connect your application"
+   - Copy the connection string
+   - Replace `<password>` with your database user password
+   - Replace `<dbname>` with your database name (e.g., `trullo`)
+   - Example: `mongodb+srv://username:password@cluster.mongodb.net/trullo`
+
+#### Setting up Local MongoDB
+
+1. Install MongoDB locally (if not already installed)
+2. Start MongoDB service
+3. Use connection string: `mongodb://localhost:27017/trullo`
+
+#### Generate JWT Secret
+
+Run this command to generate a secure JWT secret:
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+### Installation
+
+```bash
+npm install
+```
+
+### Running the Application
+
+Development mode:
+```bash
+npm run dev
+```
+
+Production mode:
+```bash
+npm run build
+npm start
+```
+
+The server will run on `http://localhost:3000` (or the port specified in your `.env` file).
+
 ## Teoretiska Resonemang
 
 ### Val av Databas
