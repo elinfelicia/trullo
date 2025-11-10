@@ -11,8 +11,7 @@ const ProjectDetail = ({ project, onClose, onUpdate }) => {
 
   const fetchProjectTasks = useCallback(async () => {
     try {
-      // Fetch tasks by projectId to get all tasks assigned to this project
-      // This includes tasks assigned from the Tasks page (which set projectId directly)
+ 
       const response = await tasksAPI.getAll({ projectId: project._id, limit: 1000 });
       const tasks = response.data.docs || response.data || [];
       setProjectTasks(tasks);

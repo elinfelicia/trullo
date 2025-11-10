@@ -27,7 +27,7 @@
   opacity: 0.9;
 }
 
-/* Override width for header buttons - they should be auto-width, not 100% */
+
 .tasks-header .btn-primary,
 .projects-header .btn-primary {
   width: auto;
