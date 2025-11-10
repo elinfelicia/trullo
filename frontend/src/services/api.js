@@ -1,6 +1,18 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+// Get API URL from environment variable
+// If VITE_API_URL is set, use it (should already include /api)
+// Otherwise default to localhost
+let API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
+// Ensure the URL ends with /api if it doesn't already
+if (!API_BASE_URL.endsWith('/api')) {
+  API_BASE_URL = API_BASE_URL.endsWith('/') 
+    ? `${API_BASE_URL}api` 
+    : `${API_BASE_URL}/api`;
+}
+
+console.log('API Base URL:', API_BASE_URL);
 
 // Create axios instance with default config
 const api = axios.create({
@@ -31,7 +43,13 @@ api.interceptors.response.use(
     // Log network errors for debugging
     if (!error.response) {
       console.error('Network Error:', error.message);
-      console.error('Is the backend running on http://localhost:3000?');
+      console.error('Request URL:', error.config?.url);
+      console.error('Full URL:', error.config?.baseURL + error.config?.url);
+      console.error('Is the backend running?');
+    } else {
+      console.error('API Error:', error.response.status, error.response.statusText);
+      console.error('Request URL:', error.config?.url);
+      console.error('Response:', error.response.data);
     }
     
     if (error.response?.status === 401) {
