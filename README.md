@@ -1,14 +1,40 @@
 # Trullo
 
+A full-stack task management application with React frontend and Node.js/Express backend.
+
+## Project Structure
+
+```
+trullo/
+├── backend/          # Node.js/Express API server
+│   ├── src/         # Source code
+│   ├── .env         # Environment variables (create this)
+│   └── package.json
+├── frontend/        # React frontend application
+│   ├── src/         # Source code
+│   └── package.json
+└── README.md
+```
+
 ## Setup Instructions
 
 ### Prerequisites
 - Node.js installed
 - MongoDB database (local or MongoDB Atlas)
 
-### Environment Variables
+### Backend Setup
 
-Create a `.env` file in the root directory with the following variables:
+1. Navigate to the backend directory:
+```bash
+cd backend
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Create a `.env` file in the `backend/` directory with the following variables:
 
 ```env
 PORT=3000
@@ -47,13 +73,7 @@ Run this command to generate a secure JWT secret:
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-### Installation
-
-```bash
-npm install
-```
-
-### Running the Application
+4. Run the backend server:
 
 Development mode:
 ```bash
@@ -67,6 +87,41 @@ npm start
 ```
 
 The server will run on `http://localhost:3000` (or the port specified in your `.env` file).
+
+### Frontend Setup
+
+1. Navigate to the frontend directory:
+```bash
+cd frontend
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Run the development server:
+```bash
+npm run dev
+```
+
+The frontend will run on `http://localhost:5173` (or another port if 5173 is taken).
+
+### Running Both Servers
+
+Open two terminal windows:
+
+**Terminal 1 - Backend:**
+```bash
+cd backend
+npm run dev
+```
+
+**Terminal 2 - Frontend:**
+```bash
+cd frontend
+npm run dev
+```
 
 ## Teoretiska Resonemang
 
