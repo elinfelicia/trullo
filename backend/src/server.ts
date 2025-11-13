@@ -85,27 +85,22 @@ const startServer = async () => {
         });
 
         // Graceful shutdown
-        process.on('SIGTERM', () => {
-            console.log('SIGTERM signal received: closing HTTP server');
+        const gracefulShutdown = async () => {
+            console.log('Shutdown signal received: closing HTTP server');
             server.close(() => {
                 console.log('HTTP server closed');
-                mongoose.connection.close(() => {
+                mongoose.connection.close().then(() => {
                     console.log('MongoDB connection closed');
                     process.exit(0);
+                }).catch((err) => {
+                    console.error('Error closing MongoDB connection:', err);
+                    process.exit(1);
                 });
             });
-        });
+        };
 
-        process.on('SIGINT', () => {
-            console.log('SIGINT signal received: closing HTTP server');
-            server.close(() => {
-                console.log('HTTP server closed');
-                mongoose.connection.close(() => {
-                    console.log('MongoDB connection closed');
-                    process.exit(0);
-                });
-            });
-        });
+        process.on('SIGTERM', gracefulShutdown);
+        process.on('SIGINT', gracefulShutdown);
     } catch (error) {
         console.error('Failed to start server:', error);
         process.exit(1);
