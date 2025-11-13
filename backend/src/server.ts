@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import mongoose from "mongoose";
 import connectDB from "./config/database";
 import taskRoutes from "./routes/task.routes";
 import userRoutes from "./routes/user.routes";
@@ -11,10 +12,19 @@ import {errorHandler} from "./middleware/error.middleware";
 
 dotenv.config();
 
+// Validate required environment variables
+const requiredEnvVars = ['MONGODB_URI', 'JWT_SECRET'];
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+
+if (missingEnvVars.length > 0) {
+    console.error(`Missing required environment variables: ${missingEnvVars.join(', ')}`);
+    if (process.env.NODE_ENV === 'production') {
+        process.exit(1);
+    }
+}
+
 const app: Application = express();
 const PORT = process.env.PORT || 3000;
-
-connectDB();
 
 // Enable CORS for frontend
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
@@ -55,7 +65,6 @@ app.use(cors({
 
 app.use(express.json());
 
-
 app.use('/api/tasks', taskRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/projects', projectRoutes);
@@ -63,8 +72,44 @@ app.get("/", (req: Request, res: Response) => {
     res.send("Trullo API");
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
-
+// Error handler must be last middleware
 app.use(errorHandler);
+
+// Start server only after database connection is established
+const startServer = async () => {
+    try {
+        await connectDB();
+        
+        const server = app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+
+        // Graceful shutdown
+        process.on('SIGTERM', () => {
+            console.log('SIGTERM signal received: closing HTTP server');
+            server.close(() => {
+                console.log('HTTP server closed');
+                mongoose.connection.close(false, () => {
+                    console.log('MongoDB connection closed');
+                    process.exit(0);
+                });
+            });
+        });
+
+        process.on('SIGINT', () => {
+            console.log('SIGINT signal received: closing HTTP server');
+            server.close(() => {
+                console.log('HTTP server closed');
+                mongoose.connection.close(false, () => {
+                    console.log('MongoDB connection closed');
+                    process.exit(0);
+                });
+            });
+        });
+    } catch (error) {
+        console.error('Failed to start server:', error);
+        process.exit(1);
+    }
+};
+
+startServer();
