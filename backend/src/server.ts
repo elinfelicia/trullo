@@ -89,7 +89,7 @@ const startServer = async () => {
             console.log('SIGTERM signal received: closing HTTP server');
             server.close(() => {
                 console.log('HTTP server closed');
-                mongoose.connection.close(false, () => {
+                mongoose.connection.close(() => {
                     console.log('MongoDB connection closed');
                     process.exit(0);
                 });
@@ -100,7 +100,7 @@ const startServer = async () => {
             console.log('SIGINT signal received: closing HTTP server');
             server.close(() => {
                 console.log('HTTP server closed');
-                mongoose.connection.close(false, () => {
+                mongoose.connection.close(() => {
                     console.log('MongoDB connection closed');
                     process.exit(0);
                 });
